@@ -8,8 +8,8 @@ export function eventPaginateResponse(events: IEvent[]) {
 }
 
 
-export function eventResponse(events: IEvent) {
+export function eventResponse(event: IEvent) {
     return {
-        data: events
+        data: event
     }
 }

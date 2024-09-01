@@ -3,6 +3,8 @@ import {JwtService} from "../services/jwt.service";
 import {setUserAccess} from "../middleware/set_user_access.middleware";
 import {requireAuthMiddleware} from "../middleware/required_auth.middleware";
 import {EventController} from "../controllers/event.controller";
+import {ValidationRequest} from "../middleware/validate_request.middleware";
+import {EventRequest} from "../request/event.request";
 
 
 export const eventRouteSetup = (app :Express, eventController :EventController, jwtService: JwtService) => {
@@ -10,11 +12,11 @@ export const eventRouteSetup = (app :Express, eventController :EventController, 
         return setUserAccess(req, res, next, jwtService)
     }, requireAuthMiddleware]
 
-    app.post("/api/event", validateAuth, (req: Request, res: Response) => {
+    app.post("/api/event", validateAuth, EventRequest.create(), ValidationRequest, (req: Request, res: Response) => {
         return eventController.create(req, res)
     })
 
-    app.put("/api/event", validateAuth,(req: Request, res: Response) => {
+    app.put("/api/event", validateAuth, EventRequest.update(), ValidationRequest, (req: Request, res: Response) => {
         return eventController.update(req, res)
     })
 
