@@ -1,5 +1,5 @@
 
-import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
+import { MailerSend, EmailParams } from "mailersend";
 
 
 export interface EmailSendPayload {
