@@ -19,6 +19,7 @@ import passport from "passport";
 import {EventServiceImpl} from "./services/event.service";
 import {MailerSendService} from "./services/mailer.service";
 import {EventController} from "./controllers/event.controller";
+import cors from "cors";
 import {eventRouteSetup} from "./routes/event_setup";
 dotenv.config();
 
@@ -26,6 +27,7 @@ const {
     JWT_SECRET = "",
     ACCESS_TOKEN_MAILER_SEND = "",
     MAIL_SENDER_NAME = "",
+    ALLOWED_ORIGIN=  "",
     MAIL_SENDER_EMAIL = "",
 } = process.env
 
@@ -38,6 +40,9 @@ const runningApp = async () => {
     const port = process.env.PORT;
 
     app.use(passport.initialize());
+    app.use(cors({
+        origin: [ALLOWED_ORIGIN]
+    }))
 
     const mailerSend = new MailerSend({
         apiKey: ACCESS_TOKEN_MAILER_SEND,

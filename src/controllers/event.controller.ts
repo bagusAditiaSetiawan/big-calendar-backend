@@ -1,9 +1,7 @@
 import { Request, Response} from "express";
-import {AuthService} from "../services/auth.service";
-import {logoutResponse, signInResponse, signUpResponse} from "../helpers/auth_controller_response";
-import {getToken, UserAuthenticatedRequest} from "../middleware/set_user_access.middleware";
-import {EventService, EventServiceImpl} from "../services/event.service";
-import {Types} from "mongoose";
+import {EventService} from "../services/event.service";
+import {eventPaginateResponse, eventResponse} from "../helpers/event_controller_response";
+import {NotFoundError} from "../errors/not-found-error";
 
 
 export interface EventController {
@@ -19,34 +17,37 @@ export class EventController implements EventController {
 
     async paginate(req: Request, res: Response): Promise<void> {
         const events  = await this.eventService.paginate()
-        res.send(events)
+        res.send(eventPaginateResponse(events))
     }
 
     async create(req: Request, res: Response): Promise<void> {
         const event  = await this.eventService.create(req.body);
-        res.status(201).send(event)
+        res.status(201).send(eventResponse(event))
     }
 
     async update(req: Request, res: Response): Promise<void> {
         const event  = await this.eventService.update(req.body);
-        res.send(event)
+        res.send(eventResponse(event))
     }
 
     async findOne(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
         const event  = await this.eventService.findOne(id);
-        res.send(event)
+        if(!event) {
+            throw new NotFoundError("Event is not found")
+        }
+        res.send(eventResponse(event))
     }
 
     async deleteOne(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
         const event  = await this.eventService.delete(id);
-        res.status(201).send(event)
+        res.status(201).send(eventResponse(event))
     }
 
     async sendEmail(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
         const event  = await this.eventService.sendEmail(id);
-        res.send(event)
+        res.send(eventResponse(event))
     }
 }
